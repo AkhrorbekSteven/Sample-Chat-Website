@@ -6,12 +6,15 @@ let chatMain = document.querySelector('.chat-main')
 let textInput = document.querySelector('#textInput')
 let sendButton = document.querySelector('#sendBtn')
 let id
+let chatId
 let DarkMode = document.querySelector('.dark-mode')
 
 function chatsRenderer(array) {
     chatMain.innerHTML = null
     chatsList.innerHTML = null
     for (let i = 1; i < array.length; i++) {
+        id = array[i].user_id - 1
+        
         let chat = document.createElement('li')
         let img = document.createElement('img')
         let infoWrapper = document.createElement('div')
@@ -29,7 +32,8 @@ function chatsRenderer(array) {
         img.src = array[i].img
         userName.innerText = array[i].username
         time.innerText = array[i].last_seen
-        lastMessage.innerText = `Hi what's up`
+        lastMessage.innerText = chats[id].messages[chats[id].messages.length - 1].text
+        
 
         infoWrapperTop.appendChild(userName)
         infoWrapperTop.appendChild(time)
@@ -41,7 +45,7 @@ function chatsRenderer(array) {
         chatsList.appendChild(chat)
 
         chat.addEventListener('click', () => {
-            id = array[i].user_id - 1
+            chatId = array[i].user_id - 1
             chatMain.classList.remove('inactive')
             for (let i = 0; i < chatsList.childNodes.length; i++) {
                 chatsList.childNodes[i].classList.remove('active')
@@ -50,7 +54,7 @@ function chatsRenderer(array) {
             avatarName.innerText = userName.innerText
             userLastSeen.innerText = time.innerText
             avatarImage.src = img.src
-            MessagesRenderer(chats[id].messages, chats[id].receiver_id, chats[id].sender_id)
+            MessagesRenderer(chats[chatId].messages, chats[chatId].receiver_id, chats[chatId].sender_id)
         })
     }
 }
@@ -120,8 +124,9 @@ sendButton.addEventListener('click', () => {
                 text: textInput.value,
                 time: currentTime
             }
-            chats[id].messages.push(newMessage)
-            MessagesRenderer(chats[id].messages, chats[id].receiver_id, chats[id].sender_id)
+            chats[chatId].messages.push(newMessage)
+            chatsRenderer(users)
+            MessagesRenderer(chats[chatId].messages, chats[chatId].receiver_id, chats[chatId].sender_id)    
         } else {
             alert('please type smth')
         }
@@ -130,3 +135,5 @@ sendButton.addEventListener('click', () => {
         alert('please select a chat!!!')
     }
 })
+
+console.log(chats[1].messages[chats[1].messages.length - 1].text);
